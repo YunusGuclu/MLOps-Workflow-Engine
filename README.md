@@ -75,9 +75,9 @@ Bu yapı sayesinde sistem:
 - Farklı eğitim senaryoları oluşturulabilir
 - İstenilen eğitim pipeline’ı zincir (chain) mantığıyla kurgulanabilir
 
-******Bu yaklaşım sayesinde proje;  
+>Bu yaklaşım sayesinde proje;  
 tek bir veri setine bağlı bir ML uygulaması değil,  
-**genel amaçlı, genişletilebilir ve ölçeklenebilir bir MLOps workflow motoru** olarak tasarlanmıştır.******
+**genel amaçlı, genişletilebilir ve ölçeklenebilir bir MLOps workflow motoru** olarak tasarlanmıştır.
 ---
 
 ## 🧠 Neden Celery? (Bu projede kritik nokta)
