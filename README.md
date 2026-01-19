@@ -289,13 +289,16 @@ RabbitMQ Management Plugin:
 ```
 http://127.0.0.1:15672
 
-kullanıcı/şifre: guest/guest (lokal)```
+kullanıcı/şifre: guest/guest (lokal)
+```
 
 ### 2) Bağımlılıklar
 Önce proje dizinine girip gereksinimleri yükleyin:
 
-```cd mlops_django
-pip install -r requirements.txt```
+```
+cd mlops_django
+pip install -r requirements.txt
+```
 
 ### 3) Migrasyonlar
 
