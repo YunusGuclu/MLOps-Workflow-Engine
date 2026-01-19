@@ -282,32 +282,32 @@ print(res.id)           # Celery Task ID (takip/izleme için)
 
 ****RabbitMQManagement Plugin:****
 
-rabbitmq-plugins enable rabbitmq_management
+**rabbitmq-plugins enable rabbitmq_management**
 
 # RabbitMQ panel:
 
 ****http://127.0.0.1:15672****
 
-kullanıcı/şifre: guest/guest (lokal)
+****kullanıcı/şifre: guest/guest (lokal)****
 -
 ### 2) Bağımlılıklar
 ****Önce proje dizinine girip gereksinimleri yükleyin:****
 
-cd mlops_django
-pip install -r requirements.txt
+**cd mlops_django
+pip install -r requirements.txt**
 
 ### 3) Migrasyonlar
 
 ****Veritabanı tablolarını oluşturmak için:****
 
-python manage.py makemigrations
-python manage.py migrate
+**python manage.py makemigrations
+python manage.py migrate**
 
 ### 4) Django’yu Başlat
 
 ****Geliştirme sunucusunu ayağa kaldırın:****
 
-python manage.py runserver
+**python manage.py runserver**
 
 ****Uygulama varsayılan olarak aşağıdaki adreste çalışır:****
 
@@ -318,10 +318,10 @@ python manage.py runserver
 ****Windows işletim sisteminde -P solo kullanılması önerilir.
 -E parametresi, Flower üzerinden task event takibi yapılabilmesi için gereklidir.****
 
-celery -A mlops_django worker -l info -P solo -E
+**celery -A mlops_django worker -l info -P solo -E**
 
 ### 6) Flower (Task Monitoring Panel)
 
 ****Celery task’larının canlı olarak izlenebilmesi için Flower kullanılır.****
 
-celery -A mlops_django flower --port=5555
+**celery -A mlops_django flower --port=5555**
