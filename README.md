@@ -198,56 +198,56 @@ Sistem workflow kaydını açar ve ilk task’i kuyruğa yollar: `upload_task`.
 <img width="1663" height="891" alt="image" src="https://github.com/user-attachments/assets/18fbf135-3219-4e3b-a23b-77e1857889a4" />
 
 ---
-CSV yükle
+****CSV yükle****
 
-Model seç
+****Model seç****
 
-Hiperparametreleri gir
+****Hiperparametreleri gir****
 
-Gönder → zincir başlar, monitor’a yönlendirir
+****Gönder → zincir başlar, monitor’a yönlendirir****
 
 ## 2) Canlı İzleme — monitor.html
 <img width="1272" height="905" alt="image" src="https://github.com/user-attachments/assets/b54641ba-09bc-47f0-b553-e5d3f3b196ef" />
 
 ---
-Workflow durumu (PENDING/RUNNING/COMPLETED/FAILED)
+****Workflow durumu (PENDING/RUNNING/COMPLETED/FAILED)****
 
-Adım kartları (upload/preprocess/train)
+****Adım kartları (upload/preprocess/train)****
 
-Accuracy grafiği (train/val)
+****Accuracy grafiği (train/val)****
 
-Sonuçlar + “Modeli İndir”
+****Sonuçlar + “Modeli İndir”****
 
-Restart ve Compose aksiyonları
+****Restart ve Compose aksiyonları****
 
 ## 3) Workflow Listesi — list.html
 <img width="1517" height="906" alt="image" src="https://github.com/user-attachments/assets/b55ef1ca-e3ac-4cf7-b888-eb3847b22f1b" />
 
 ---
-Tüm workflow’lar
+****Tüm workflow’lar****
 
-Modele göre filtreleme
+****Modele göre filtreleme****
 
-Skora göre sıralama
+****Skora göre sıralama****
 
-Monitor’a git / modeli indir
+****Monitor’a git / modeli indir****
 
 ## 4) Queue Dashboard — queue.html
 <img width="1442" height="902" alt="image" src="https://github.com/user-attachments/assets/86171d8f-881b-449f-856b-261a12990b64" />
 
 ---
-RabbitMQ kuyruk durumları (ready, unacked, consumers, state)
+****RabbitMQ kuyruk durumları (ready, unacked, consumers, state)****
 
-Son görevler (TaskResult) + adım eşleşmesi
+****Son görevler (TaskResult) + adım eşleşmesi****
 
-Son workflow’ların adım ilerleyişi
+****Son workflow’ların adım ilerleyişi****
 
 ## 5) Flower — flower.html
 <img width="1438" height="715" alt="image" src="https://github.com/user-attachments/assets/f94ab435-01f3-4c95-9554-3810245c5e42" />
 <img width="1411" height="871" alt="image" src="https://github.com/user-attachments/assets/3a20f9f3-2d02-4006-9060-b939737a9d11" />
 
 ---
-Flower arayüzü iframe ile projeye gömülüdür
+****Flower arayüzü iframe ile projeye gömülüdür****
 
-Worker/task bazında canlı izleme sağlar.
+****Worker/task bazında canlı izleme sağlar.****
 
