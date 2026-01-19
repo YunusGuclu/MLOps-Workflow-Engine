@@ -286,26 +286,20 @@ RabbitMQ Management Plugin:
 
 **RabbitMQ panel:**
 
-```
-http://127.0.0.1:15672
-
-kullanıcı/şifre: guest/guest (lokal)
-```
+```http://127.0.0.1:15672
+kullanıcı/şifre: guest/guest (lokal)```
 
 ### 2) Bağımlılıklar
 Önce proje dizinine girip gereksinimleri yükleyin:
 
-```
-cd mlops_django
-pip install -r requirements.txt
-```
+```cd mlops_django
+pip install -r requirements.txt```
 
 ### 3) Migrasyonlar
 
 Veritabanı tablolarını oluşturmak için:
 
-```
-python manage.py makemigrations
+```python manage.py makemigrations
 python manage.py migrate```
 
 ### 4) Django’yu Başlat
