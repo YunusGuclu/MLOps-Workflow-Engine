@@ -58,9 +58,11 @@ Bu veri seti yalnızca:
 
 amacıyla tercih edilmiştir.
 
-****Örnek Veri Seti****
+**Örnek Veri Seti**
+
 https://www.kaggle.com/datasets/uciml/iris?resource=download
 https://www.kaggle.com/datasets/himanshunakrani/iris-dataset
+
 ---
 
 ### 🎯 Asıl Amaç
