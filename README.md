@@ -15,7 +15,7 @@ Makine öğrenmesi işleri genelde:
 - aynı anda birden fazla eğitim istenebilir,
 - “nerede kaldı / bitti mi / hata mı aldı?” gibi sorulara anlık cevap istenir.
 
-Bu proje tam olarak bu ihtiyacı çözer.
+> Bu proje tam olarak bu ihtiyacı çözer.
 ---
 ## 🎯 Projenin Amacı
 
@@ -75,6 +75,7 @@ Celery sayesinde:
 ## ✨ Öne Çıkan Özellikler
 
 **✅ Uçtan Uca MLOps Akışı
+
 - Her MLOps süreci bir **Workflow** kaydıdır.
 - Workflow’un adımları(Upload-preprocess-train) ayrı ayrı **WorkflowStep** olarak saklanır.
 
@@ -187,7 +188,7 @@ Sistem workflow kaydını açar ve ilk task’i kuyruğa yollar: `upload_task`.
 - **TrainingResult:** model dosyası + özet skorlar
 - **django_celery_results_taskresult:** Celery görev sonuçları
 
-### Veritabanı modelleri ilişkilidir. MLOps süreç akışı veritabanından izlenebilir.
+>  Veritabanı modelleri ilişkilidir. MLOps süreç akışı veritabanından izlenebilir.
 
 ---
 
