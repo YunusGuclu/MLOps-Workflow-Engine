@@ -62,7 +62,7 @@ amacıyla tercih edilmiştir.
 
 - https://www.kaggle.com/datasets/uciml/iris?resource=download
 - https://www.kaggle.com/datasets/vikrishnan/iris-dataset
-- https://www.kaggle.com/datasets/himanshunakrani/iris-dataset
+
 
 ---
 
