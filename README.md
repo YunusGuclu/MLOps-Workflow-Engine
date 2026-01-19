@@ -1,4 +1,4 @@
-#🚀 MLOps Workflow Engine (Upload → Preprocess → Train)
+# 🚀 MLOps Workflow Engine (Upload → Preprocess → Train)
 
 **MLOps Workflow Engine**, makine öğrenmesi yaşam döngüsünü(Upload-Preprocess-Train) web üzerinden yöneten;  
 **CSV yükleme → ön işleme → model eğitimi** adımlarını  **Celery + RabbitMQ** ile kullanıcıyı bekletmeden **arka planda**, **asenkron**, **sıralı** ve **izlenebilir** şekilde çalıştıran bir workflow motorudur.
@@ -109,8 +109,8 @@ Celery sayesinde:
   
 **🧩 Workflow Restart & Compose**
 
-- **Restart:** Aynı dataset + aynı config ile yeni workflow oluşturup başlatır
-- **Compose:** Farklı workflow’lardan dataset ve config seçerek yeni workflow üretir
+- ***Restart:*** Aynı dataset + aynı config ile yeni workflow oluşturup başlatır
+- ***Compose:*** Farklı workflow’lardan dataset ve config seçerek yeni workflow üretir
   
 **🌸Flower Entegrasyonu**
 - Celery Flower arayüzü proje içinde **iframe** olarak sunulur
