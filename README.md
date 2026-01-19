@@ -123,6 +123,9 @@ Celery sayesinde:
   - odak kuyruk detayları
 - Son görevler (TaskResult) ile adım eşlemesi yapılır
 - Son workflow’ların adım ilerleyişi canlı görünür
+- 
+**🧪Terminalden İzleme & Loglama**
+- MLOps workflow zinciri terminalden başlatılabilir ve izlenebilir.
 
 **🧱 Dayanıklılık**: Worker kaybı / hata durumlarında görev kaybını azaltmaya yönelik Celery ayarları
 
@@ -251,3 +254,68 @@ Sistem workflow kaydını açar ve ilk task’i kuyruğa yollar: `upload_task`.
 
 ****Worker/task bazında canlı izleme sağlar.****
 
+---
+## 🧪 Shell Üzerinden Manuel Zincir (Workflow) Başlatma
+
+Bazı durumlarda (debug, hızlı test, geliştirme ortamında manuel tetikleme vb.) belirli bir **workflow ID**’sine ait
+ML sürecini (CSV upload → preprocess → train) **terminal üzerinden** başlatmak isteyebilirsiniz.
+
+Aşağıdaki adımlar, istenilen ID’ye sahip workflow’un **Celery zincirini** tetikler ve çalışmayı **izlenebilir** hale getirir.
+Bu sayede süreç boyunca **kapsamlı log akışı** oluşur; adımların durumu, çıktıları ve hata detayları takip edilebilir.
+
+### 1) Django Shell’i Açın
+```bash
+python manage.py shell
+from workflow.chain import run_workflow
+res = run_workflow(4)   # 4: çalıştırmak istediğiniz workflow ID
+print(res.id)           # Celery Task ID (takip/izleme için)
+
+---
+## ✅ Kurulum ve Çalıştırma
+
+### 1) Zorunlu Servisler
+- Python 3.x
+- PostgreSQL
+- RabbitMQ (Erlang gerekir)
+- RabbitMQ Management Plugin (**/queue/** ekranı için zorunlu)
+- Python ortamı + bağımlılıklar
+
+Management Plugin:
+```bash
+rabbitmq-plugins enable rabbitmq_management
+# Panel: http://127.0.0.1:15672 (guest/guest)
+
+### 2) Bağımlılıklar
+Önce proje dizinine girip gereksinimleri yükleyin:
+
+```bash
+cd mlops_django
+pip install -r requirements.txt
+
+### 3) Migrasyonlar
+
+Veritabanı tablolarını oluşturmak için:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+
+### 4) Django’yu Başlat
+
+Geliştirme sunucusunu ayağa kaldırın:
+```bash
+python manage.py runserver
+Uygulama varsayılan olarak aşağıdaki adreste çalışır:
+http://127.0.0.1:8000
+
+### 5) Celery Worker (Windows Uyumlu)
+
+Windows işletim sisteminde -P solo kullanılması önerilir.
+-E parametresi, Flower üzerinden task event takibi yapılabilmesi için gereklidir.
+```bash
+celery -A mlops_django worker -l info -P solo -E
+
+### 6) Flower (Task Monitoring Panel)
+
+Celery task’larının canlı olarak izlenebilmesi için Flower kullanılır.
+```bash
+celery -A mlops_django flower --port=5555
