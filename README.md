@@ -383,3 +383,17 @@ Celery task’larının canlı olarak izlenebilmesi için Flower kullanılır.
 ```
 celery -A mlops_django flower --port=5555
 ```
+
+---
+
+## 👨‍💻 Geliştirici
+
+**Yunus Güçlü**  
+Software Engineer
+
+---
+
+## 📄 Lisans
+
+Bu proje kişisel eğitim ve portföy amacıyla geliştirilmiştir.  
+Ticari kullanım için geliştirici izni gereklidir.
