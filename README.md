@@ -265,10 +265,10 @@ Bu sayede süreç boyunca **kapsamlı log akışı** oluşur; adımların durumu
 
 ### Django Shell’i Açın
 
-python manage.py shell
+**python manage.py shell
 from workflow.chain import run_workflow
 res = run_workflow(4)   # 4: çalıştırmak istediğiniz workflow ID
-print(res.id)           # Celery Task ID (takip/izleme için)
+print(res.id)           # Celery Task ID (takip/izleme için)**
 
 ---
 ## ✅ Kurulum ve Çalıştırma
