@@ -305,7 +305,7 @@ Geliştirme sunucusunu ayağa kaldırın:
 ```bash
 python manage.py runserver
 Uygulama varsayılan olarak aşağıdaki adreste çalışır:
-http://127.0.0.1:8000
+http://127.0.0.1:8000 ```
 
 ### 5) Celery Worker (Windows Uyumlu)
 
