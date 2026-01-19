@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}MLOps Uygulaması{% endblock %}</title>
+  {% load static %} <!-- (İstersen kaldırabilirsin) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- STYLE BLOĞU HEAD İÇİNDE OLMALI -->
+  <style>
+    .navbar .navbar-brand {
+      color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity,1));
+    }
+    .navbar .nav-link {
+      color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity,1));
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .navbar .nav-link:hover {
+      background-color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity,1));
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-light mb-4"> <!-- navbar-light opsiyonel -->
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'workflow:create' %}">MLOps</a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#mainNav"
+              aria-controls="mainNav"
+              aria-expanded="false"
+              aria-label="Menüyü Aç/Kapat">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'workflow:create' %}">Yeni Workflow</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'workflow:list' %}">Tüm Workflow’lar</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'workflow:flower' %}">Celery Flower</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'workflow:queue' %}">Kuyruk Durumu</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="text-center mt-5 mb-3">
+    <p>&copy; 2025</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

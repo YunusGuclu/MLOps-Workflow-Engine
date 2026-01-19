@@ -1,0 +1,119 @@
+{# templates/workflow/list.html #}
+{% extends 'workflow/base.html' %}
+{% block title %}Tüm Workflow’lar{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Sidebar -->
+  <aside class="col-lg-3 mb-4">
+    <div class="card">
+      <div class="card-header">Modeller</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item {% if not current_model %}active{% endif %}">
+          <a class="d-block text-decoration-none {% if not current_model %}text-white{% endif %}"
+             href="{% url 'workflow:list' %}?{% if current_sort %}sort={{ current_sort }}{% endif %}">
+            Hepsi
+          </a>
+        </li>
+        {% for code,label in models %}
+          <li class="list-group-item {% if code == current_model %}active{% endif %}">
+            <a class="d-block text-decoration-none {% if code == current_model %}text-white{% endif %}"
+               href="{% url 'workflow:list' %}?model={{ code }}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+              {{ label }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Ana İçerik -->
+  <section class="col-lg-9">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h4">WorkFlow’lar</h1>
+
+      <!-- Sıralama Dropdown -->
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortMenu" data-bs-toggle="dropdown" aria-expanded="false">
+          {% if current_sort %}
+            {% if 'train' in current_sort %}Train{% else %}Val{% endif %}{% if 'asc' in current_sort %} ↑{% else %} ↓{% endif %}
+          {% else %}
+            Sırala
+          {% endif %}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortMenu">
+          <li><a class="dropdown-item" href="?{% if current_model %}model={{ current_model }}&{% endif %}sort=train_asc">Train ↑</a></li>
+          <li><a class="dropdown-item" href="?{% if current_model %}model={{ current_model }}&{% endif %}sort=train_desc">Train ↓</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="?{% if current_model %}model={{ current_model }}&{% endif %}sort=val_asc">Val ↑</a></li>
+          <li><a class="dropdown-item" href="?{% if current_model %}model={{ current_model }}&{% endif %}sort=val_desc">Val ↓</a></li>
+        </ul>
+      </div>
+    </div>
+
+    {% if workflows %}
+      <div class="row">
+        {% for wf in workflows %}
+          <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">
+                  WF {{ wf.id }} —
+                  {% if wf.status == 'COMPLETED' %}
+                    <span class="badge bg-success">
+                  {% elif wf.status == 'FAILED' %}
+                    <span class="badge bg-danger">
+                  {% else %}
+                    <span class="badge bg-secondary">
+                  {% endif %}
+                      {{ wf.get_status_display }}
+                    </span>
+                </h5>
+                <p class="mb-1"><strong>Model:</strong> {{ wf.config.model }}</p>
+                {% if wf.result %}
+                  <p class="mb-1"><strong>Train:</strong> {{ wf.result.summary.train_acc|floatformat:2 }}</p>
+                  <p class="mb-3"><strong>Val:</strong>   {{ wf.result.summary.val_acc|floatformat:2 }}</p>
+                  <a href="{{ wf.result.model_file.url }}" class="btn btn-sm btn-success mb-2">📥 İndir</a>
+                {% else %}
+                  <p class="text-warning mb-3">Henüz tamamlanmadı.</p>
+                {% endif %}
+                <a href="{% url 'workflow:monitor' wf.id %}" class="btn btn-sm btn-outline-primary mt-auto">Detaya Git</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      <nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{% if current_model %}model={{ current_model }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}">« Önceki</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+              <a class="page-link" href="?page={{ num }}&{% if current_model %}model={{ current_model }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}">{{ num }}</a>
+            </li>
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}&{% if current_model %}model={{ current_model }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}">Sonraki »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% else %}
+      <p>Henüz hiç workflow oluşturulmadı.</p>
+    {% endif %}
+
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+# =========================
+# ENV / SECRETS
+# =========================
+.env
+*.env
+!.env.example
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# =========================
+# DJANGO
+# =========================
+db.sqlite3
+media/
+staticfiles/
+
+# =========================
+# MLOPS ARTIFACTS (ÇOK ÖNEMLİ)
+# =========================
+datasets/
+models/
+artifacts/
+outputs/
+
+# tüm ML çıktıları
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+
+# =========================
+# LOGS
+# =========================
+*.log
+celerybeat-schedule*

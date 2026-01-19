@@ -1,0 +1,21 @@
+{% extends 'workflow/base.html' %}
+{% block title %}Celery Monitor{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <h3 class="card-title mb-0">Celery Görev İzleyici</h3>
+      <a href="{% url 'workflow:create' %}" class="btn btn-sm btn-outline-secondary">
+        ← Yeni Workflow
+      </a>
+    </div>
+    <div class="card-body p-4">
+      <p class="text-muted mb-3">Aşağıdaki panelden Celery görevlerinizin durumunu gerçek zamanlı olarak takip edebilirsiniz.</p>
+      <div class="ratio ratio-16x9 border rounded overflow-hidden">
+        <iframe src="http://localhost:5555" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,536 @@
+{% extends 'workflow/base.html' %}
+{% block title %}Kuyruk Durumu{% endblock %}
+
+{% block content %}
+<style>
+
+  :root{
+    --bg: #f6f7fb;
+    --card-bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --brand: #4f46e5;      /* indigo-600 */
+    --brand-2: #06b6d4;    /* cyan-500 */
+    --success: #16a34a;    /* green-600 */
+    --warning: #f59e0b;    /* amber-500 */
+    --danger:  #dc2626;    /* red-600 */
+    --border: rgba(15, 23, 42, .08);
+    --shadow: 0 10px 30px rgba(2, 6, 23, .06);
+    --shadow-strong: 0 18px 40px rgba(2, 6, 23, .10);
+    --radius: 18px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg: #0b1220;
+      --card-bg: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: rgba(148, 163, 184, .15);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --shadow-strong: 0 18px 40px rgba(0,0,0,.45);
+    }
+    .table>:not(caption)>*>* { color: var(--text); }
+    .table-light { background: rgba(148,163,184,.08) !important; color: var(--text); }
+  }
+
+  body{ background: radial-gradient(1200px 600px at 10% -10%, rgba(79,70,229,.08), transparent 60%),
+                    radial-gradient(1000px 500px at 120% 10%, rgba(6,182,212,.08), transparent 60%),
+                    var(--bg) !important; }
+
+  /* Başlık satırı */
+  .h3{ color: var(--text); letter-spacing: .2px; }
+  .small, .text-muted{ color: var(--muted) !important; }
+  #updatedAt{
+    padding: .25rem .6rem; border: 1px solid var(--border); border-radius: 999px;
+    background: rgba(148,163,184,.12);
+  }
+
+  /* Kartlar */
+  .card-soft{
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.4)) ;
+    backdrop-filter: blur(4px);
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .2s ease;
+  }
+  @media (prefers-color-scheme: dark){
+    .card-soft{ background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.8)); }
+  }
+  .card-soft:hover{ transform: translateY(-2px); box-shadow: var(--shadow-strong); }
+  .card-header.bg-white{ background: transparent !important; border-bottom: 1px solid var(--border); }
+
+  /* Metrik başlıkları */
+  .metric{
+    font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: .3px;
+    line-height: 1.1;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+  }
+  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+  /* Tablo görünümü */
+  .table{
+    --bs-table-bg: transparent !important;
+    margin: 0;
+  }
+  .table thead th{
+    font-weight: 700;
+    font-size: .85rem;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border) !important;
+    white-space: nowrap;
+  }
+  .table td, .table th{ padding: .85rem .9rem !important; vertical-align: middle; }
+  .table-striped tbody tr:nth-of-type(odd){ background-color: rgba(79,70,229,.04); }
+  @media (prefers-color-scheme: dark){
+    .table-striped tbody tr:nth-of-type(odd){ background-color: rgba(148,163,184,.06); }
+  }
+  .table-hover tbody tr{
+    transition: background-color .15s ease, box-shadow .15s ease;
+  }
+  .table-hover tbody tr:hover{
+    background: linear-gradient(90deg, rgba(79,70,229,.08), rgba(6,182,212,.08));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .table .text-end{ text-align: right; }
+
+  /* Rozetler ve durumlar */
+  .badge{ border-radius: 999px; padding: .45em .7em; font-weight: 700; letter-spacing: .3px; }
+  .badge.bg-success{ background-color: var(--success) !important; box-shadow: 0 0 0 2px rgba(22,163,74,.12); }
+  .badge.bg-danger{  background-color: var(--danger)  !important; box-shadow: 0 0 0 2px rgba(220,38,38,.14); }
+  .badge.bg-warning{ background-color: var(--warning) !important; box-shadow: 0 0 0 2px rgba(245,158,11,.14); }
+  .badge.bg-secondary{ background-color: rgba(148,163,184,.35) !important; color: #0f172a; }
+  @media (prefers-color-scheme: dark){
+    .badge.bg-secondary{ color: #e5e7eb; }
+  }
+
+  /* RUNNING animasyonu (STARTED / TRAINING / PREPROCESSING) */
+  .badge.bg-warning.text-dark{
+    position: relative; overflow: hidden;
+  }
+  .badge.bg-warning.text-dark::after{
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(120% 120% at 10% 10%, rgba(255,255,255,.45), transparent 60%);
+    mix-blend-mode: soft-light; animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:.35 }
+    50%{ opacity:.85 }
+  }
+
+  /* Odak Kuyruk bilgi satırları */
+  #f_node{
+    margin-top: .25rem; color: var(--muted);
+    padding: .35rem .6rem; border: 1px dashed var(--border); border-radius: 8px;
+    background: rgba(79,70,229,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    #f_node{ background: rgba(79,70,229,.12); }
+  }
+
+  /* Sayfa içinde küçük ayrıntılar */
+  .card-soft .small{ font-size: .92rem; }
+  .card-soft h5{ color: var(--text); font-weight: 800; letter-spacing: .2px; }
+
+  /* “Yükleniyor…” satırları için yumuşak shimmer efekti (ekstra sınıf gerektirmez) */
+  tbody td:contains("Yükleniyor…"),
+  tbody td:contains("Kayıt yok."){
+    position: relative; color: var(--muted);
+  }
+  tbody td:contains("Yükleniyor…")::before,
+  tbody td:contains("Kayıt yok.")::before{
+    content:''; position:absolute; left:0; top:0; right:0; bottom:0; border-radius: 8px;
+    background: linear-gradient(100deg, transparent 0%, rgba(148,163,184,.12) 50%, transparent 100%);
+    animation: shimmer 1.4s linear infinite;
+  }
+  @keyframes shimmer{
+    0%{ transform: translateX(-100%); }
+    100%{ transform: translateX(100%); }
+  }
+
+  /* Küçük ekran optimizasyonları */
+  @media (max-width: 992px){
+    .table-responsive{ border-radius: 12px; }
+    .card-header h5{ font-size: 1rem; }
+    #f_node{ word-break: break-all; }
+  }
+
+  /* İnce ayrıntı: linkler */
+  a.text-decoration-none{
+    color: var(--brand);
+    transition: color .15s ease, text-shadow .15s ease;
+  }
+  a.text-decoration-none:hover{
+    color: var(--brand-2);
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  }
+</style>
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">RabbitMQ Kuyruk Durumu</h1>
+  <span id="updatedAt" class="text-muted small">—</span>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-3">
+    <div class="card card-soft">
+      <div class="card-body">
+        <div class="text-muted small">Toplam Mesaj (Ready)</div>
+        <div class="metric" id="m_ready">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-soft">
+      <div class="card-body">
+        <div class="text-muted small">Toplam Mesaj (Unacked)</div>
+        <div class="metric" id="m_unacked">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-soft">
+      <div class="card-body">
+        <div class="text-muted small">Toplam Mesaj (All)</div>
+        <div class="metric" id="m_all">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-soft">
+      <div class="card-body">
+        <div class="text-muted small">Bağlı Tüketiciler</div>
+        <div class="metric" id="m_consumers">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card card-soft h-100">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Kuyruklar</h5>
+        <span id="vhost" class="badge bg-light text-dark"></span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Ad</th>
+                <th class="text-end">Ready</th>
+                <th class="text-end">Unacked</th>
+                <th class="text-end">Toplam</th>
+                <th class="text-end">Consumers</th>
+                <th>State</th>
+              </tr>
+            </thead>
+            <tbody id="qbody">
+              <tr><td colspan="6" class="text-center py-3">Yükleniyor…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card card-soft h-100">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">Odak Kuyruk (<span id="focusName">celery</span>)</h5>
+      </div>
+      <div class="card-body small">
+        <div class="mb-2"><strong>Ready:</strong> <span id="f_ready">—</span></div>
+        <div class="mb-2"><strong>Unacked:</strong> <span id="f_unacked">—</span></div>
+        <div class="mb-2"><strong>Toplam:</strong> <span id="f_total">—</span></div>
+        <div class="mb-2"><strong>Consumers:</strong> <span id="f_consumers">—</span></div>
+        <div class="mb-2"><strong>State:</strong> <span id="f_state">—</span></div>
+        <div class="text-muted mono" id="f_node">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔴 CANLI WORKFLOW PANELİ -->
+<div class="card card-soft mb-4">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Canlı Workflow Adımları</h5>
+    <div class="text-muted small">En son 10</div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th class="text-nowrap">WF</th>
+            <th>Model</th>
+            <th class="text-nowrap">Durum</th>
+            <th>Adımlar (Upload → Preprocess → Train)</th>
+            <th class="text-nowrap">Skor</th>
+            <th class="text-nowrap">Oluşturulma</th>
+          </tr>
+        </thead>
+        <tbody id="wfbody">
+          <tr><td colspan="6" class="text-center py-3">Yükleniyor…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card card-soft">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Son 3 Workflow Zinciri</h5>
+    <span class="text-muted small">django_celery_results</span>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Ad</th>
+            <th class="mono">Task ID</th>
+            <th>Durum</th>
+            <th>Tamamlandı</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="4" class="text-center py-3">Yükleniyor…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const el = s => document.querySelector(s);
+
+  function n(v){ return (v===null||v===undefined) ? '—' : v; }
+  function fmtInt(v){ try{ return Number(v).toLocaleString(); }catch(_){ return n(v);} }
+
+  function paintQueues(arr){
+    const body = el('#qbody');
+    if(!Array.isArray(arr) || !arr.length){
+      body.innerHTML = `<tr><td colspan="6" class="text-center py-3">Kuyruk yok.</td></tr>`;
+      return;
+    }
+    body.innerHTML = '';
+    arr.forEach(q=>{
+      const name = q.name || q.queue || '—';
+      const ready = q.messages_ready ?? q.messages_ready_ram ?? q.messages_ready ?? 0;
+      const unacked = q.messages_unacknowledged ?? 0;
+      const total = q.messages ?? (ready + unacked);
+      const consumers = q.consumers ?? 0;
+      const state = q.state || 'running';
+
+      body.innerHTML += `
+        <tr>
+          <td class="mono">${name}</td>
+          <td class="text-end">${fmtInt(ready)}</td>
+          <td class="text-end">${fmtInt(unacked)}</td>
+          <td class="text-end"><strong>${fmtInt(total)}</strong></td>
+          <td class="text-end">${fmtInt(consumers)}</td>
+          <td>${state}</td>
+        </tr>`;
+    });
+  }
+
+  function paintFocus(q){
+    if(!q || q.error){
+      ['#f_ready','#f_unacked','#f_total','#f_consumers','#f_state','#f_node'].forEach(sel=>{
+        el(sel).textContent = '—';
+      });
+      return;
+    }
+    const ready = q.messages_ready ?? 0;
+    const unacked = q.messages_unacknowledged ?? 0;
+    const total = q.messages ?? (ready + unacked);
+    el('#f_ready').textContent = fmtInt(ready);
+    el('#f_unacked').textContent = fmtInt(unacked);
+    el('#f_total').textContent = fmtInt(total);
+    el('#f_consumers').textContent = fmtInt(q.consumers ?? 0);
+    el('#f_state').textContent = n(q.state || 'running');
+    el('#f_node').textContent  = `node: ${n(q.node)}`;
+  }
+
+  function paintOverview(o){
+    const qt = (o?.queue_totals) || (o?.object_totals) || {};
+    const ready   = qt.messages_ready ?? qt.messages ?? 0;
+    const unacked = qt.messages_unacknowledged ?? 0;
+    const all     = qt.messages ?? (ready + unacked);
+
+    el('#m_ready').textContent   = fmtInt(ready);
+    el('#m_unacked').textContent = fmtInt(unacked);
+    el('#m_all').textContent     = fmtInt(all);
+  }
+
+  function paintRecentTasks(arr){
+  const body = el('#tbody');
+  if(!Array.isArray(arr) || !arr.length){
+    body.innerHTML = `<tr><td colspan="4" class="text-center py-3">Kayıt yok.</td></tr>`;
+    return;
+  }
+  body.innerHTML = '';
+  arr.forEach(t=>{
+    // Sadece step_label göster
+    let stepLabel = t.step_label || '—';
+
+    const statusClass =
+      t.status === 'SUCCESS' ? 'bg-success' :
+      t.status === 'FAILURE' ? 'bg-danger'  :
+      'bg-secondary';
+
+    body.innerHTML += `
+      <tr>
+        <td>
+          <span class="badge bg-info">${stepLabel}</span>
+        </td>
+        <td class="mono small">${t.task_id}</td>
+        <td><span class="badge ${statusClass}">${t.status || '—'}</span></td>
+        <td>${t.date_done ? new Date(t.date_done).toLocaleString() : '—'}</td>
+      </tr>`;
+  });
+}
+
+
+  // ---- Canlı Workflow Paneli ----
+  function stepBadge(s){
+    const title = s.step_name.charAt(0).toUpperCase() + s.step_name.slice(1);
+    let cls = 'bg-secondary', txt = 'PENDING';
+
+    if (s.celery_status === 'STARTED') { cls = 'bg-warning text-dark'; txt = 'RUNNING'; }
+    if (s.celery_status === 'SUCCESS') { cls = 'bg-success';          txt = 'DONE'; }
+    if (s.celery_status === 'FAILURE') { cls = 'bg-danger';           txt = 'FAIL'; }
+    if (s.celery_status === 'RETRY')   { cls = 'bg-info text-dark';   txt = 'RETRY'; }
+    if (s.celery_status === 'PENDING') { cls = 'bg-secondary';        txt = 'PENDING'; }
+
+    if (s.step_status === 'PREPROCESSING' || s.step_status === 'TRAINING') { cls = 'bg-warning text-dark'; txt = 'RUNNING'; }
+    if (s.step_status === 'COMPLETED') { cls = 'bg-success'; txt = 'DONE'; }
+    if (s.step_status === 'FAILED')    { cls = 'bg-danger';  txt = 'FAIL'; }
+
+    const detail = s.celery_status ? ` (${s.celery_status})` : '';
+    return `<span class="badge ${cls} me-1">${title}: ${txt}${detail}</span>`;
+  }
+
+  function paintWorkflows(arr){
+    const body = document.querySelector('#wfbody');
+    if(!Array.isArray(arr) || !arr.length){
+      body.innerHTML = `<tr><td colspan="6" class="text-center py-3">Kayıt yok.</td></tr>`;
+      return;
+    }
+    body.innerHTML = '';
+    arr.forEach(wf=>{
+      const stepsHtml = (wf.steps||[]).map(stepBadge).join(' ');
+      const scoreHtml = wf.result && (wf.result.train_acc !== null || wf.result.val_acc !== null)
+        ? `<div class="small">Train: ${(wf.result.train_acc ?? 0).toFixed(2)} | Val: ${(wf.result.val_acc ?? 0).toFixed(2)}</div>`
+        : `<span class="text-muted small">—</span>`;
+      const statusBadge =
+        wf.status === 'COMPLETED' ? '<span class="badge bg-success">Tamamlandı</span>' :
+        wf.status === 'FAILED'    ? '<span class="badge bg-danger">Hata</span>' :
+        wf.status === 'TRAINING'  ? '<span class="badge bg-warning text-dark">Eğitim</span>' :
+        wf.status === 'PREPROCESSING' ? '<span class="badge bg-warning text-dark">Önişleme</span>' :
+        '<span class="badge bg-secondary">Beklemede</span>';
+
+      const monitorHref = "{% url 'workflow:monitor' 0 %}".replace('/0/','/'+wf.workflow_id+'/');
+
+      body.innerHTML += `
+        <tr>
+          <td class="text-nowrap">
+            <a href="${monitorHref}" class="text-decoration-none">WF ${wf.workflow_id}</a>
+          </td>
+          <td>${wf.model || '—'}</td>
+          <td class="text-nowrap">${statusBadge}</td>
+          <td>${stepsHtml || '<span class="text-muted small">—</span>'}</td>
+          <td class="text-nowrap">${scoreHtml}</td>
+          <td class="text-nowrap">${wf.created_at ? new Date(wf.created_at).toLocaleString() : '—'}</td>
+        </tr>`;
+    });
+  }
+
+  function fetchWorkflows(){
+    return fetch("{% url 'workflow:queue-workflows' %}?limit=10")
+      .then(r=>r.json())
+      .then(data=>{
+        paintWorkflows(data);
+        // Sayfada koşulu belirlemek için: herhangi bir workflow RUNNING mı?
+        const DONE = new Set(['COMPLETED','FAILED']);
+        const anyRunning = Array.isArray(data) && data.some(w => !DONE.has(w.status));
+        return anyRunning; // tick akışında kullanılacak
+      });
+  }
+
+  // ---- Poll kontrolü (monitor sayfası ile aynı mantık) ----
+  let pollTimer = null;
+  function ensurePolling(shouldRun){
+    if (shouldRun && !pollTimer){
+      pollTimer = setInterval(tick, 2000);
+    } else if (!shouldRun && pollTimer){
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+  }
+
+  // ---- Tek tick: iki API'yi beraber oku ----
+  function tick(){
+    Promise.all([
+      fetch("{% url 'workflow:queue-status' %}").then(r=>r.json()),
+      fetchWorkflows() // anyRunning bool döndürüyor
+    ])
+    .then(([j, anyRunning])=>{
+      // Hatalar
+      if (Array.isArray(j.errors) && j.errors.length) {
+        const bar = document.getElementById('errbar') || (()=>{
+          const d = document.createElement('div');
+          d.id = 'errbar';
+          d.className = 'alert alert-warning';
+          document.querySelector('main.container').prepend(d);
+          return d;
+        })();
+        bar.textContent = 'Queue API hatası: ' + j.errors.join(' | ');
+      }
+
+      // Üst kartlar + odak kuyruk
+      el('#vhost').textContent = 'vhost: {{ settings.RABBITMQ_MANAGEMENT.VHOST|default:"/" }}';
+      el('#focusName').textContent = '{{ settings.RABBITMQ_MANAGEMENT.QUEUE_NAME|default:"celery" }}';
+      paintOverview(j.overview || {});
+      paintQueues(j.queues || []);  // yalnız celery
+      const totalConsumers = (j.queues||[]).reduce((acc,q)=>acc + (q.consumers || 0), 0);
+      el('#m_consumers').textContent = fmtInt(totalConsumers);
+      paintFocus(j.focus_queue || {});
+      paintRecentTasks(j.recent_tasks || []);
+      el('#updatedAt').textContent = new Date().toLocaleTimeString();
+
+      // Çalışıyorsa devam et, bitmişse dur
+      ensurePolling(anyRunning);
+      // Eğer bitmişse: bu tick'le birlikte son snapshot zaten çizildi, timer durur.
+    })
+    .catch(_=>{
+      // Sessiz: ağ hatası vb. durumda yoğunluk yapmayalım
+    });
+  }
+
+  // Başlangıç: bir kez çalıştır
+  tick();
+
+  // Sekme görünür olduğunda (örn. başka sayfadan geri dönünce) otomatik tekrar tetikle
+  document.addEventListener('visibilitychange', ()=>{
+    if (!document.hidden){
+      tick();
+    }
+  });
+  
+</script>
+{% endblock %}
