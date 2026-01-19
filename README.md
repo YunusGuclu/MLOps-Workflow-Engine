@@ -42,6 +42,44 @@ Her bir makine öğrenmesi adımı (dataset yükleme, ön işleme, model eğitim
 > **kontrollü, ölçeklenebilir ve kurumsal düzeyde yönetilebilir** hale getirilmiştir.
 ---
 
+## 🧩 Örnek Veri Seti ve Tasarım Yaklaşımı
+
+Bu projede makine öğrenmesi sürecini uçtan uca gösterebilmek ve  
+workflow motorunun tüm adımlarını net şekilde tasarlayıp test edebilmek amacıyla  
+**örnek veri seti olarak Iris veri seti kullanılmıştır.**
+
+⚠️ Buradaki amaç **Iris veri seti üzerinde model başarımı elde etmek değildir.**
+
+Bu veri seti yalnızca:
+
+- MLOps yaşam döngüsünü simüle edebilmek
+- Upload → Preprocess → Train zincirini eksiksiz çalıştırabilmek
+- Celery tabanlı workflow motorunu gerçek bir ML senaryosu üzerinde gösterebilmek
+
+amacıyla tercih edilmiştir.
+
+---
+
+### 🎯 Asıl Amaç
+
+Bu projenin temel hedefi:
+
+- Belirli bir veri setine veya modele bağlı kalmak değil,
+- **makine öğrenmesi süreçlerini Celery üzerinde çalışan bir workflow motoru haline getirmektir.**
+
+Bu yapı sayesinde sistem:
+
+- Modüler ve tekrar kullanılabilir bir mimariye sahiptir
+- Farklı veri setleri ile kolayca çalışabilir
+- Yeni MLOps adımları (feature engineering, validation, inference, evaluation vb.) eklenebilir
+- Farklı eğitim senaryoları oluşturulabilir
+- İstenilen eğitim pipeline’ı zincir (chain) mantığıyla kurgulanabilir
+
+Bu yaklaşım sayesinde proje;  
+tek bir veri setine bağlı bir ML uygulaması değil,  
+**genel amaçlı, genişletilebilir ve ölçeklenebilir bir MLOps workflow motoru** olarak tasarlanmıştır.
+---
+
 ## 🧠 Neden Celery? (Bu projede kritik nokta)
 
 Makine öğrenmesi işleri (yükleme/ön işleme/eğitim) çoğu zaman **dakikalar/saatler** sürebilir.
@@ -71,7 +109,7 @@ Celery sayesinde:
   Akış bozulmadan yeniden koşmak, hatayı izole edip düzeltmek kolaylaşır.
 
 ---
-
+  
 ## ✨ Öne Çıkan Özellikler
 
 **✅ Uçtan Uca MLOps Akışı**
