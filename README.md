@@ -284,9 +284,9 @@ RabbitMQManagement Plugin:
 
 **rabbitmq-plugins enable rabbitmq_management**
 
-# RabbitMQ panel:
+**RabbitMQ panel:**
 
-> http://127.0.0.1:15672
+```http://127.0.0.1:15672```
 
 kullanıcı/şifre: guest/guest (lokal)
 
