@@ -264,12 +264,12 @@ Aşağıdaki adımlar, istenilen ID’ye sahip workflow’un **Celery zincirini*
 Bu sayede süreç boyunca **kapsamlı log akışı** oluşur; adımların durumu, çıktıları ve hata detayları takip edilebilir.
 
 ### Django Shell’i Açın
-
-**python manage.py shell
+```
+python manage.py shell
 from workflow.chain import run_workflow
 res = run_workflow(4)   # 4: çalıştırmak istediğiniz workflow ID
 print(res.id)           # Celery Task ID (takip/izleme için)**
-
+```
 ---
 ## ✅ Kurulum ve Çalıştırma
 
@@ -280,48 +280,50 @@ print(res.id)           # Celery Task ID (takip/izleme için)**
 - RabbitMQ Management Plugin (**/queue/** ekranı için zorunlu)
 - Python ortamı + bağımlılıklar
 
-RabbitMQManagement Plugin:
+RabbitMQ Management Plugin:
 
-**rabbitmq-plugins enable rabbitmq_management**
+```rabbitmq-plugins enable rabbitmq_management```
 
 **RabbitMQ panel:**
 
-```http://127.0.0.1:15672```
+```
+http://127.0.0.1:15672
 
-kullanıcı/şifre: guest/guest (lokal)
+kullanıcı/şifre: guest/guest (lokal)```
 
 ### 2) Bağımlılıklar
 Önce proje dizinine girip gereksinimleri yükleyin:
 
-**cd mlops_django
-pip install -r requirements.txt**
+```cd mlops_django
+pip install -r requirements.txt```
 
 ### 3) Migrasyonlar
 
 Veritabanı tablolarını oluşturmak için:
 
-**python manage.py makemigrations
-python manage.py migrate**
+```
+python manage.py makemigrations
+python manage.py migrate```
 
 ### 4) Django’yu Başlat
 
 Geliştirme sunucusunu ayağa kaldırın:
 
-**python manage.py runserver**
+```python manage.py runserver```
 
 Uygulama varsayılan olarak aşağıdaki adreste çalışır:
 
-http://127.0.0.1:8000
+```http://127.0.0.1:8000```
 
 ### 5) Celery Worker (Windows Uyumlu)
 
 Windows işletim sisteminde -P solo kullanılması önerilir.
 -E parametresi, Flower üzerinden task event takibi yapılabilmesi için gereklidir.
 
-**celery -A mlops_django worker -l info -P solo -E**
+```celery -A mlops_django worker -l info -P solo -E```
 
 ### 6) Flower (Task Monitoring Panel)
 
 Celery task’larının canlı olarak izlenebilmesi için Flower kullanılır.
 
-**celery -A mlops_django flower --port=5555**
+```celery -A mlops_django flower --port=5555```
