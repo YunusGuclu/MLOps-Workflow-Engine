@@ -396,4 +396,4 @@ Software Engineer
 ## 📄 Lisans
 
 Bu proje kişisel eğitim ve portföy amacıyla geliştirilmiştir.  
-Ticari kullanım için geliştirici izni gereklidir..
+Ticari kullanım için geliştirici izni gereklidir.
